@@ -1,0 +1,59 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dev Brain Dump</title>
+  </head>
+  <body>
+    <div id="app" class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">DB</div>
+          <div>
+            <h1>Dev Brain Dump</h1>
+            <p class="muted">Smart notes for developers</p>
+          </div>
+        </div>
+
+        <div class="quote card">
+          <p class="muted">Daily Dev Quote</p>
+          <blockquote>“The only way to learn a new programming language is by writing programs in it.”</blockquote>
+          <cite>— Dennis Ritchie</cite>
+        </div>
+
+        <nav class="tabs">
+          <button class="tab is-active">Tickets</button>
+          <button class="tab">Knowledge</button>
+        </nav>
+
+        <div class="search">
+          <input placeholder="Search..." />
+        </div>
+
+        <div class="new-ticket">
+          <input placeholder="Enter ticket name..." />
+          <button class="btn btn-primary">+</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <h2>Welcome to Dev Brain Dump</h2>
+          <span class="status ok">Saved 18:21:55</span>
+        </header>
+
+        <section class="empty card">
+          <h3>Ready to start taking notes?</h3>
+          <p class="muted">
+            Select a ticket from the sidebar or create a new one to start organizing your development notes.
+          </p>
+          <button class="btn btn-primary">Create Your First Ticket</button>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+
+@use 'tokens' as *;
+/* src/styles/_mixins.scss */
+@mixin card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: $radius;
+  box-shadow: $shadow;
+}
+
+@mixin focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(59,130,246,.35);
+  }
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
