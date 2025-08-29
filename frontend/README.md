@@ -1,5 +1,7 @@
 # Dev Dump
 
+testings
+
 A front-end setup using **Vite** as the bundler and **Sass** with the **7-1 architecture** for structured, maintainable styles.
 This is intended as a developer environment, not a production-ready application.
 
