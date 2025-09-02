@@ -1,5 +1,7 @@
 name: Create TODO Issues
 
+permissions:
+  issues: write
 on:
   push:
     branches:
