@@ -1,0 +1,16 @@
+// Variables
+
+.tags-list {
+    margin-top: 0.75rem;
+    display: flex; // Put tags side by side
+    flex-wrap: wrap;
+    gap: 0.5rem; // Spacing between tags
+    margin-bottom: 0.75rem;
+}
+
+.tag-chip {
+    border: 1px solid #aaa;
+    border-radius: 999px; // Pill shape
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem; // Padding inside taf
+}

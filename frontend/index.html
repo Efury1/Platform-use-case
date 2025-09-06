@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dev Brain Dump</title>
   </head>
+
   <body>
     <div id="app" class="layout">
       <aside class="sidebar">
@@ -36,21 +37,29 @@
           <input class="ticket-input" placeholder="Enter ticket name..." />
           <button class="btn btn-primary" id="addTicket">+</button>
         </div>
+
+        <div id="added-tickets">
+          <ul id="ticket-item" class="tickets__list" role="listbox" aria-label="Tickets"></ul>
+        </div>
       </aside>
 
       <main class="content">
         <header class="topbar">
           <h2>Welcome to Dev Brain Dump</h2>
-          <span class="status ok">Saved 18:21:55</span>
+          <span class="status ok" id="saveStatus">Idle</span>
         </header>
 
-        <section class="empty card">
+        <!-- Empty state -->
+        <section class="empty card" id="emptyState">
           <h3>Ready to start taking notes?</h3>
           <p class="muted">
             Select a ticket from the sidebar or create a new one to start organizing your development notes.
           </p>
           <button class="btn btn-primary" id="ticketButton">Create Your First Ticket</button>
         </section>
+
+        <!-- Notes editor mounts here -->
+        <section id="editorRoot"></section>
       </main>
     </div>
 
