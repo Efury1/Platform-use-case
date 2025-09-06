@@ -1,5 +1,6 @@
 // src/main.js
 import './main.scss'
+import './abstracts/_variables.scss'
 
 // Tags
 
@@ -81,6 +82,9 @@ function openNotepad(ticketValue) {
   editorRoot.dataset.activeTicket = ticketValue;
   editorRoot.innerHTML = `
     <h2>Notes for: ${ticketValue}</h2>
+    <div class="tags-list">
+      ${TAGS.map(tag => `<span class="tag-chip">${tag}</span>`).join("")}
+    </div>
     <textarea class="editor-textarea" placeholder="Write your notes here..."></textarea>
   `;
 }
