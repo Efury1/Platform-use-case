@@ -2,9 +2,8 @@
 import './main.scss'
 import './abstracts/_variables.scss'
 
-// Tags
-
-const TAGS = [
+// Tags for notes
+const TAGS = [ 
   "Think About Later",
   "Keep Long-Term",
   "Temporary/Delete WHen Done",
