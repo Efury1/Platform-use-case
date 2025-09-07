@@ -1,58 +1,133 @@
 // src/main.js
-import './main.scss'
-import './abstracts/_variables.scss'
+import "./main.scss";
+import "./abstracts/_variables.scss";
 
-// Tags for notes
-const TAGS = [ 
+/**
+ * -------------------------------------------------------
+ * Ticket Notes
+ * -------------------------------------------------------
+ */
+
+// -----------------------------
+// Constants
+// -----------------------------
+const TAGS = [
   "Think About Later",
   "Keep Long-Term",
-  "Temporary/Delete WHen Done",
+  "Temporary/Delete When Done",
   "References",
   "Tried and Failed",
   "Found/Discovered",
-  "Parking Lot"
-]
+  "Parking Lot",
+];
 
+const SELECTORS = {
+  tabs: ".tabs .tab",
+  activeTab: ".tabs .is-active",
+  ticketBtn: "#ticketButton",
+  addTicketBtn: "#addTicket",
+  ticketInput: ".ticket-input",
+  ticketList: "#ticket-item", // <ul>
+  editorRoot: "#editorRoot", // notepad section
+  emptyState: "#emptyState",
+};
 
 // -----------------------------
-// Tabs
+// Utils
 // -----------------------------
-document.querySelectorAll('.tabs .tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelector('.tabs .is-active')?.classList.remove('is-active')
-    btn.classList.add('is-active')
-  })
-})
+
+/** Build a stable storage key for a given ticket id */
+const storageKey = (ticket) => `note:${ticket}`;
+
+/** Save note text for a ticket. Returns boolean for UX feedback. */
+function saveNote(ticket, text) {
+  try {
+    localStorage.setItem(storageKey(ticket), text ?? ""); // Stores key-value pair into the boewser's localStorage (persistence storage tied to the domain)
+    return true;
+  } catch (error) {
+    console.error("Failed to save note", error);
+    return false;
+  }
+}
+
+/** Load note text for a ticket (or empty string) */
+function loadNote(ticket) {
+  try {
+    return localStorage.getItem(storageKey(ticket)) ?? "";
+  } catch (error) {
+    console.error("Failed to load note", error);
+    return "";
+  }
+}
+
+/** timestamp string */
+function nowStamp() {
+  try {
+    return new Date().toLocaleString();
+  } catch {
+    return "";
+  }
+}
+
+/** Guard: trim & collapse whitespace */
+function cleanTicketValue(raw) {
+  return (raw || "").trim().replace(/\s+/g, " ");
+}
+
+/** Prevent duplicate ticket labels (case-insensitive) */
+function ticketExists(listEl, value) {
+  // normalize the incoming ticket label to lowercase
+  const norm = value.toLowerCase();
+
+  // grab all the button elements inside the list, each ticket has a .tickets__btn
+  return Array.from(listEl.querySelectorAll(".tickets__btn")).some(
+    // for each button compare its text
+    (btn) => btn.textContent.trim().toLowerCase() === norm
+  );
+}
+
+// -----------------------------
+// Tabs (simple active-state toggle)
+// -----------------------------
+document.querySelectorAll(SELECTORS.tabs).forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelector(SELECTORS.activeTab)?.classList.remove("is-active");
+    btn.classList.add("is-active");
+  });
+});
 
 // -----------------------------
 // DOM Elements
 // -----------------------------
-const ticketSelectorButton = document.getElementById("ticketButton");
-const addButtonSelector = document.getElementById("addTicket");
-const ticketSelectorInput = document.getElementsByClassName("ticket-input")[0];
-const ticketList = document.getElementById("ticket-item"); // UL
-const editorRoot = document.getElementById("editorRoot"); // Notepad section
-const emptyState = document.getElementById("emptyState");
+const ticketSelectorButton = document.querySelector(SELECTORS.ticketBtn);
+const addTicketButton = document.querySelector(SELECTORS.addTicketBtn);
+const ticketInput = document.querySelector(SELECTORS.ticketInput);
+const ticketList = document.querySelector(SELECTORS.ticketList);
+const editorRoot = document.querySelector(SELECTORS.editorRoot);
+const emptyState = document.querySelector(SELECTORS.emptyState);
 
 // -----------------------------
-// Helpers
+// Ticket Item Factory
 // -----------------------------
 function createTicketElement(ticketValue) {
   const li = document.createElement("li");
-  li.className = "tickets__item"; 
-  li.setAttribute("role", "option"); 
+  li.className = "tickets__item";
+  li.setAttribute("role", "option");
+
+  // Container around ticket _ delete button
+  const wrapper = document.createElement("div");
+  wrapper.className = "tickets__controls";
 
   // Ticket main button
   const ticketButtonItem = document.createElement("button");
   ticketButtonItem.className = "tickets__btn";
+  ticketButtonItem.type = "button";
   ticketButtonItem.textContent = ticketValue;
+  ticketButtonItem.setAttribute("aria-label", `Open notes for ${ticketValue}`);
 
-  // When clicked → open notepad for that ticket
-  ticketButtonItem.addEventListener("click", () => {
-    openNotepad(ticketValue);
-  });
+  ticketButtonItem.addEventListener("click", () => openNotepad(ticketValue));
 
-  // Delete Button
+  // Delete button
   const delBtn = document.createElement("button");
   delBtn.className = "tickets__delete";
   delBtn.type = "button";
@@ -60,57 +135,132 @@ function createTicketElement(ticketValue) {
   delBtn.innerHTML = "&#x2715;"; // ×
 
   delBtn.addEventListener("click", () => {
-    li.remove();
-    // clear notepad if the deleted ticket was open
+    // If the ticket is currently open, clear editor
     if (editorRoot.dataset.activeTicket === ticketValue) {
-      editorRoot.innerHTML = "<p class='empty'>No ticket selected</p>";
+      editorRoot.innerHTML = `<p class="empty">No ticket selected</p>`;
       delete editorRoot.dataset.activeTicket;
     }
+    li.remove();
   });
 
-  // Assemble
-  li.appendChild(ticketButtonItem);
-  li.appendChild(delBtn);
+    // Put both buttons inside a wrapper
+  wrapper.appendChild(ticketButtonItem);
+  wrapper.appendChild(delBtn);
 
+
+  li.appendChild(wrapper);
   return li;
 }
 
-// Have save for notepad notes
-
+// -----------------------------
+// Notepad (per ticket)
+// -----------------------------
 function openNotepad(ticketValue) {
   editorRoot.dataset.activeTicket = ticketValue;
+
+  // Load existing note
+  const existing = loadNote(ticketValue);
+
+  // Render editor UI
   editorRoot.innerHTML = `
-    <h2>Notes for: ${ticketValue}</h2>
-    <div class="tags-list">
-      ${TAGS.map(tag => `<span class="tag-chip">${tag}</span>`).join("")}
+    <h2 class="editor-title">Notes for: <span class="ticket-label">${ticketValue}</span></h2>
+
+    <div class="tags-list" role="listbox" aria-label="Quick tags">
+      ${TAGS.map(
+        (tag) =>
+          `<button type="button" class="tag-chip" role="option" aria-label="Insert tag ${tag}">#${tag}</button>`
+      ).join("")}
     </div>
-    <textarea class="editor-textarea" placeholder="Write your notes here..."></textarea>
+
+    <label class="sr-only" for="note-editor">Note content</label>
+    <textarea id="note-editor" class="editor-textarea" placeholder="Write your notes here..." spellcheck="true"></textarea>
+
+    <div class="note-actions">
+      <button type="button" class="saveBtn">Save</button>
+      <span class="save-status" aria-live="polite" aria-atomic="true"></span>
+    </div>
+
+    <section class="saved-note" aria-live="polite">
+      <h3 class="saved-note__title">Saved note</h3>
+      <div class="saved-note__meta"></div>
+      <pre class="saved-note__content"></pre>
+    </section>
   `;
+
+  // Grabs
+  const textarea = editorRoot.querySelector(".editor-textarea");
+  const saveBtn = editorRoot.querySelector(".saveBtn");
+  const status = editorRoot.querySelector(".save-status");
+  const previewMeta = editorRoot.querySelector(".saved-note__meta");
+  const previewContent = editorRoot.querySelector(".saved-note__content");
+
+  // Init
+  textarea.value = existing;
+  previewContent.textContent = existing;
+  previewMeta.textContent = existing ? `Last loaded ${nowStamp()}` : "No saved note yet"; // nowStamp gives us current timestamp
+
+  // Insert tag on click
+  editorRoot.querySelectorAll(".tag-chip").forEach((tagBtn) => {
+    tagBtn.addEventListener("click", () => {
+      const tag = tagBtn.textContent?.trim() || "";
+      const needsSpace = textarea.value && !/\s$/.test(textarea.value);
+      textarea.value += `${needsSpace ? " " : ""}${tag}`;
+      textarea.focus();
+    });
+  });
+
+  // Save handler
+  function doSave() {
+    const ok = saveNote(ticketValue, textarea.value);
+    status.textContent = ok ? "Saved" : "Save failed";
+    if (ok) {
+      previewContent.textContent = textarea.value;
+      previewMeta.textContent = `Last saved ${nowStamp()}`;
+    }
+    setTimeout(() => (status.textContent = ""), 1600);
+  }
+
+  // Click to save
+  saveBtn.addEventListener("click", doSave);
+
 }
 
 // -----------------------------
-// Event Listeners
+// Events — Add tickets & focus
 // -----------------------------
-ticketSelectorButton.addEventListener("click", () => {
-  ticketSelectorInput.focus();
+ticketSelectorButton?.addEventListener("click", () => {
+  ticketInput?.focus();
 });
 
-addButtonSelector.addEventListener("click", () => {
-  const ticketValue = ticketSelectorInput.value.trim();
-  if (!ticketValue) {
-    console.log("No value");
+function addTicketFromInput() {
+  const ticketValue = cleanTicketValue(ticketInput?.value);
+  if (!ticketValue) return;
+
+  if (ticketExists(ticketList, ticketValue)) {
+    // Soft nudge if duplicate
+    ticketInput?.setAttribute("aria-invalid", "true");
+    ticketInput?.setAttribute("title", "Ticket already exists");
     return;
   }
 
-  // Create + append
   const li = createTicketElement(ticketValue);
   ticketList.appendChild(li);
 
-  // Clear input
-  ticketSelectorInput.value = "";
-
-  //Hide/remomve empty state when first ticket is added
-  if (emptyState) {
-    emptyState.remove();
+  // Clear input + a11y reset
+  if (ticketInput) {
+    ticketInput.value = "";
+    ticketInput.removeAttribute("aria-invalid");
+    ticketInput.removeAttribute("title");
   }
-});
+
+  // Remove empty state on first ticket
+  if (emptyState) emptyState.remove();
+
+  // Open editor immediately for faster flow
+  openNotepad(ticketValue);
+}
+
+// Click to add
+addTicketButton?.addEventListener("click", addTicketFromInput);
+
+

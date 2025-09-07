@@ -14,3 +14,19 @@
     font-size: 0.8rem;
     padding: 0.25rem 0.6rem; // Padding inside taf
 }
+
+.tickets__delete,
+.tickets__btn {
+    border: none;
+    background: transparent;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.tickets__controls {
+    display: inline;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    gap: 5rem;
+    background: blue;
+}
