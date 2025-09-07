@@ -1,6 +1,7 @@
 // src/main.js
 import "./main.scss";
 import "./abstracts/_variables.scss";
+import "./components/_tickets.scss"
 
 /**
  * -------------------------------------------------------
@@ -42,7 +43,7 @@ const storageKey = (ticket) => `note:${ticket}`;
 /** Save note text for a ticket. Returns boolean for UX feedback. */
 function saveNote(ticket, text) {
   try {
-    localStorage.setItem(storageKey(ticket), text ?? ""); // Stores key-value pair into the boewser's localStorage (persistence storage tied to the domain)
+    localStorage.setItem(storageKey(ticket), text ?? ""); // Stores key-value pair into the browser's localStorage (persistence storage tied to the domain)
     return true;
   } catch (error) {
     console.error("Failed to save note", error);
