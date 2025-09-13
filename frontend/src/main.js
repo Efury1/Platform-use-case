@@ -43,7 +43,15 @@ const storageKey = (ticket) => `note:${ticket}`;
 /** Save note text for a ticket. Returns boolean for UX feedback. */
 function saveNote(ticket, text) {
   try {
-    localStorage.setItem(storageKey(ticket), text ?? ""); // Stores key-value pair into the browser's localStorage (persistence storage tied to the domain)
+    // Load existing notes for this ticket 
+    const existing = localStorage.getItem(storageKey(ticket));
+    const savedNotes = existing ? JSON.parse(existing) : [];
+
+    // Add the new text
+    savedNotes.push(text);
+
+    //save it back
+    localStorage.setItem(storageKey(ticket), JSON.stringify(savedNotes));
     return true;
   } catch (error) {
     console.error("Failed to save note", error);
@@ -54,10 +62,11 @@ function saveNote(ticket, text) {
 /** Load note text for a ticket (or empty string) */
 function loadNote(ticket) {
   try {
-    return localStorage.getItem(storageKey(ticket)) ?? "";
+    const existing = localStorage.getItem(storageKey(ticket));
+    return existing ? JSON.parse(existing) : [];
   } catch (error) {
     console.error("Failed to load note", error);
-    return "";
+    return [];
   }
 }
 
@@ -262,6 +271,7 @@ function addTicketFromInput() {
 
   // Remove empty state on first ticket
   if (emptyState) emptyState.remove();
+  
 
   localStorage.setItem(storageKeyForTicket(ticketValue), ticketValue);
   // Open editor immediately for faster flow
