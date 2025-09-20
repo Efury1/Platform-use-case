@@ -40,6 +40,21 @@ const SELECTORS = {
 /** Build a stable storage key for a given ticket id */
 const storageKey = (ticket) => `note:${ticket}`;
 
+function normalizeNotes(raw) {
+  if (!raw) {
+    return [];
+  }
+
+  if(Array.isArray(raw)) {
+    if(raw.length && typeof raw[0] === "string") {
+      return raw.map((t) => ({text: t, ts: ""}));
+    }
+    return raw;
+  }
+
+  return [];
+}
+
 /** Save note text for a ticket. Returns boolean for UX feedback. */
 function saveNote(ticket, text) {
   try {
