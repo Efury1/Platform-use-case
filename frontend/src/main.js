@@ -1,4 +1,28 @@
-// src/main.js
+// ----------------------------------------------------------------------------------
+// High-level overview
+// ----------------------------------------------------------------------------------
+// This file powers a tiny ticket → notes app, where each ticket has its own notepad.
+// Data is stored in localStorage under two key patterns:
+// - ticket:<ticketLabel> (stores the label itself so tickets persist)
+// - note:<ticketLabel> (stores an array of note objects for that ticket)
+//
+// Notes are stored as an array of objects: { text: string, ts: string }
+// - text: the saved note body
+// - ts: a timestamp string (from nowStamp()) for when it was saved
+//
+// The UI has 3 main pieces:
+// 1) Ticket list on the left (each ticket is a button + delete icon)
+// 2) Editor area (textarea + Save button + tag chips)
+// 3) Saved-notes list (renders all saved notes for the active ticket)
+//
+// Accessibility & UX touches:
+// - ARIA labels on buttons
+// - aria-live regions for save status + saved notes area
+// - prevents duplicate tickets (case-insensitive)
+// - keeps newest saved notes at the top
+// ----------------------------------------------------------------------------------
+
+
 import "./main.scss";
 import "./abstracts/_variables.scss";
 import "./components/_tickets.scss"
@@ -40,18 +64,31 @@ const SELECTORS = {
 /** Build a stable storage key for a given ticket id */
 const storageKey = (ticket) => `note:${ticket}`;
 
+// normalise text meaning the process of transforming text into a single canonical form that didn't exist before
+/* 
+* Accepts raw data pulled from localStorgae,  which may be
+* undefined/null
+* array<string> (the previous shape)
+* array<{text? string, ts: string}>
+*/
 function normalizeNotes(raw) {
-  if (!raw) {
-    return [];
+  if (!raw) return [];
+
+  // Already an array? normalize each item into {text, ts}
+  if (Array.isArray(raw)) {
+    return raw.map((item) => {
+      if (typeof item === "string") return { text: item, timestamp: "" };
+      if (item && typeof item === "object") {
+        return {
+          text: String(item.text ?? ""),
+          timestamp: String(item.timestamp ?? ""),
+        };
+      }
+      return { text: "", timestamp: "" };
+    });
   }
 
-  if(Array.isArray(raw)) {
-    if(raw.length && typeof raw[0] === "string") {
-      return raw.map((t) => ({text: t, ts: ""}));
-    }
-    return raw;
-  }
-
+  // anything else -> empty
   return [];
 }
 
@@ -60,10 +97,13 @@ function saveNote(ticket, text) {
   try {
     // Load existing notes for this ticket 
     const existing = localStorage.getItem(storageKey(ticket));
-    const savedNotes = existing ? JSON.parse(existing) : [];
+    const savedNotes = normalizeNotes(existing ? JSON.parse(existing) : []);
 
-    // Add the new text
-    savedNotes.push(text);
+    const noteObject = { text: String(text || "").trim(), ts: nowStamp()};
+    if (!noteObject.text) return false; // we don't want to store empties
+
+    // Newest at top
+    savedNotes.unshift(noteObject);
 
     //save it back
     localStorage.setItem(storageKey(ticket), JSON.stringify(savedNotes));
@@ -78,7 +118,7 @@ function saveNote(ticket, text) {
 function loadNote(ticket) {
   try {
     const existing = localStorage.getItem(storageKey(ticket));
-    return existing ? JSON.parse(existing) : [];
+    return normalizeNotes(existing ? JSON.parse(existing) : []);
   } catch (error) {
     console.error("Failed to load note", error);
     return [];
@@ -177,6 +217,38 @@ function createTicketElement(ticketValue) {
   return li;
 }
 
+//------------------------------
+// Render Saved Ticker
+//-----------------------------
+function renderSavedNotes(container, notes) {
+if (!notes.length) {
+container.innerHTML = `
+<h3 class="saved-note__title">Saved notes</h3>
+<div class="saved-note__meta">No saved note yet</div>
+`;
+return;
+}
+
+
+const list = notes
+.map(
+(n, i) => `
+<article class="saved-note__item" data-index="${i}">
+<div class="saved-note__meta">${n.ts || "Unknown time"}</div>
+<pre class="saved-note__content">${n.text}</pre>
+</article>`
+)
+.join("");
+
+
+container.innerHTML = `
+<h3 class="saved-note__title">Saved notes</h3>
+<div class="saved-note__list" role="list">
+${list}
+</div>
+`;
+}
+
 // -----------------------------
 // Notepad (per ticket)
 // -----------------------------
@@ -216,13 +288,15 @@ function openNotepad(ticketValue) {
   const textarea = editorRoot.querySelector(".editor-textarea");
   const saveBtn = editorRoot.querySelector(".saveBtn");
   const status = editorRoot.querySelector(".save-status");
-  const previewMeta = editorRoot.querySelector(".saved-note__meta");
-  const previewContent = editorRoot.querySelector(".saved-note__content");
+  const savedContainer = editorRoot.querySelector(".saved-note");
+  // const previewMeta = editorRoot.querySelector(".saved-note__meta");
+  // const previewContent = editorRoot.querySelector(".saved-note__content");
 
   // Init
-  textarea.value = existing;
-  previewContent.textContent = existing;
-  previewMeta.textContent = existing ? `Last loaded ${nowStamp()}` : "No saved note yet"; // nowStamp gives us current timestamp
+  renderSavedNotes(savedContainer, existing);
+  // textarea.value = existing;
+  // previewContent.textContent = existing;
+  // previewMeta.textContent = existing ? `Last loaded ${nowStamp()}` : "No saved note yet"; // nowStamp gives us current timestamp
 
   // Insert tag on click
   editorRoot.querySelectorAll(".tag-chip").forEach((tagBtn) => {
@@ -238,9 +312,12 @@ function openNotepad(ticketValue) {
   function doSave() {
     const ok = saveNote(ticketValue, textarea.value);
     status.textContent = ok ? "Saved" : "Save failed";
-    if (ok) {
-      previewContent.textContent = textarea.value;
-      previewMeta.textContent = `Last saved ${nowStamp()}`;
+    if (ok) { 
+      textarea.value = ""; // clear editor after save
+      const updated = loadNote(ticketValue);
+      renderSavedNotes(savedContainer, updated);
+      // previewContent.textContent = textarea.value;
+      // previewMeta.textContent = `Last saved ${nowStamp()}`;
     }
     setTimeout(() => (status.textContent = ""), 1600);
   }
