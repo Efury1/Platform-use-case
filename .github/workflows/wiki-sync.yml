@@ -1,5 +1,4 @@
 name: Sync Docs to Wiki
-
 on:
   push:
     paths:
@@ -9,27 +8,41 @@ jobs:
   update-wiki:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the main repo
-      - uses: actions/checkout@v3
+      # First checkout - your main repository with the docs folder
+      - name: Checkout main repo
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      # Step 2: Clone the Wiki repo using your PAT
-      - name: Clone Wiki Repo
+          
+      # Second checkout - the wiki repository
+      - name: Checkout Wiki
+        uses: actions/checkout@v3
+        with:
+          repository: ${{github.repository}}.wiki
+          path: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}  # Needed for pushing to wiki
+          
+      # Copy files from docs folder to wiki
+      - name: Copy docs to wiki
         run: |
-          git clone https://efury1:${{ secrets.WIKI_PAT }}@github.com/Efury1/Test-Environment.wiki.git wiki
-
-      # Step 3: Sync docs folder to wiki
-      - name: Sync docs to wiki
-        run: |
-          rsync -av --delete docs/ wiki/
-
-      # Step 4: Commit and push changes
-      - name: Commit & Push
+          # Clear wiki first (optional - removes old files)
+          rm -rf wiki/*
+          # Copy all contents from docs to wiki
+          cp -r docs/* wiki/ 2>/dev/null || true
+          # If you want to copy hidden files too:
+          # cp -r docs/. wiki/
+          
+      # Commit and push changes to wiki
+      - name: Push to wiki
         run: |
           cd wiki
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add .
-          git commit -m "Update wiki pages from docs [skip ci]" || echo "No changes to commit"
-          git push origin master
+          # Check if there are changes to commit
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync docs from main repository"
+            git push
+          fi
