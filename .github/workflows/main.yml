@@ -1,2 +1,14 @@
-- name: Deploy GitHub wiki
-  uses: actions4gh/deploy-wiki@v1.1.1
+name: Sync Wiki
+https://github.com/Efury1/Test-Environment/tree/master/.github/workflows
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy GitHub wiki
+        uses: actions4gh/deploy-wiki@v1.1.1
+
