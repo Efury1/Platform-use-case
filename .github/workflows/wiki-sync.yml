@@ -20,7 +20,7 @@ jobs:
         with:
           repository: ${{github.repository}}.wiki
           path: wiki
-          token: ${{ secrets.GITHUB_TOKEN }}  # Needed for pushing to wiki
+          token: ${{ secrets.WIKI_PAT }}  # Needed for pushing to wiki
           
       # Copy files from docs folder to wiki
       - name: Copy docs to wiki
