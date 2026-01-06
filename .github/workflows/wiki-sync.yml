@@ -1,48 +1,32 @@
-name: Sync Docs to Wiki  
+name: Update Wiki
+
 on:
   push:
-    paths:
-      - 'docs/**'  # Trigger when docs change
+    branches:
+      - master
 
 jobs:
   update-wiki:
     runs-on: ubuntu-latest
     steps:
-      # First checkout - your main repository with the docs folder
-      - name: Checkout main repo
+      - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          
-      # Second checkout - the wiki repository
-      - name: Checkout Wiki
-        uses: actions/checkout@v3
-        with:
-          repository: ${{github.repository}}.wiki
-          path: wiki
-          token: ${{ secrets.WIKI_PAT }}  # Needed for pushing to wiki
-          
-      # Copy files from docs folder to wiki
-      - name: Copy docs to wiki
+
+      - name: Set up Git
         run: |
-          # Clear wiki first (optional - removes old files)
-          rm -rf wiki/*
-          # Copy all contents from docs to wiki
-          cp -r docs/* wiki/ 2>/dev/null || true
-          # If you want to copy hidden files too:
-          # cp -r docs/. wiki/
-          
-      # Commit and push changes to wiki
-      - name: Push to wiki
+          git config --global user.name "CI Bot"
+          git config --global user.email "ci@example.com"
+
+      - name: Clone Wiki
         run: |
+          git clone https://$GH_TOKEN@github.com/Efury1/Test-Environment.wiki.git wiki
+
+      - name: Update Wiki
+        run: |
+          echo "Automated update on $(date)" >> wiki/AutoPage.md
           cd wiki
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
           git add .
-          # Check if there are changes to commit
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit"
-          else
-            git commit -m "Sync docs from main repository"
-            git push
-          fi
+          git commit -m "Update wiki via CI/CD"
+          git push origin main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

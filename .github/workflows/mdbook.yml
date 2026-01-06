@@ -1,35 +1,50 @@
-name: Update Wiki
+name: Deploy mdBook site to Pages
 
 on:
   push:
-    branches:
-      - main  # trigger on pushes to your main repo branch
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  update-wiki:
+  build:
     runs-on: ubuntu-latest
-
+    env:
+      MDBOOK_VERSION: 0.4.36
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Git
+      # Install prebuilt mdBook binary
+      - name: Install mdBook
         run: |
-          git config --global user.name "CI Bot"
-          git config --global user.email "ci@example.com"
+          curl -LO https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+          tar -xzf mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+          sudo mv mdbook /usr/local/bin/
+          mdbook --version
 
-      - name: Clone Wiki
-        run: |
-          git clone https://$WIKI_PAT@github.com/Efury1/Test-Environment.wiki.git wiki
+      - name: Build mdBook
+        run: mdbook build docs  # docs/ is the source folder
 
-      - name: Update Wiki
-        run: |
-          # Example: add a new page or update an existing one
-          echo "Automated update on $(date)" >> wiki/AutoPage.md
-          
-          cd wiki
-          git add .
-          git commit -m "Update wiki via CI/CD"
-          git push origin main
-        env:
-          WIKI_PAT: ${{ secrets.WIKI_PAT }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/book  # upload the generated HTML
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
