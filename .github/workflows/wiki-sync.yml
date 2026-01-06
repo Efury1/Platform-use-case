@@ -3,7 +3,7 @@ name: Update Wiki
 on:
   push:
     branches:
-      - master
+      - master 
 
 jobs:
   update-wiki:
@@ -27,6 +27,6 @@ jobs:
           cd wiki
           git add .
           git commit -m "Update wiki via CI/CD"
-          git push origin main
+          git push origin master
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
