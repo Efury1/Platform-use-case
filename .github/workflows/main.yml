@@ -1,0 +1,2 @@
+- name: Deploy GitHub wiki
+  uses: actions4gh/deploy-wiki@v1.1.1
