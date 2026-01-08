@@ -1,0 +1,19 @@
+$primary-color: #3498db;
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: $primary-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+
+  h1 {
+    font-size: 3rem;
+    &:after {
+      content: " 👋 Hello World!";
+    }
+  }
+}
