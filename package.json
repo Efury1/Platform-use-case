@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "sass": "^1.97.2",
+    "prettier": "^3.2.5"
+  },
+  "scripts": {
+    "sass:watch": "node sass-watch.js",
+    "sass:watch:quiet": "sass --watch src/styles/**/*.scss --quiet-deps",
+    "dev": "npm run sass:watch",
+    "dev:quiet": "npm run sass:watch:quiet",
+    "format": "prettier --write \"src/**/*.{js,ts,scss,css,json,md}\""
+  }
+}
