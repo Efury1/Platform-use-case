@@ -3,6 +3,4 @@
 node_modules/
 
 # Build / compiled output
-dist/
-*.css       # ignore all compiled CSS
-*.css.map   # ignore source maps
+*.vs
