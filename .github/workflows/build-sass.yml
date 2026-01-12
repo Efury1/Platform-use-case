@@ -30,4 +30,4 @@ jobs:
         run: npm ci
 
       - name: Compile Sass
-        run: npx sass src/scss:src/dist
+        run: npx sass src/:src/dist
