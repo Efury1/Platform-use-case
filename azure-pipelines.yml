@@ -1,0 +1,59 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - master
+      - dev
+
+stages:
+- stage: DevTesting
+  displayName: 'Move Work Items to Dev Testing'
+  jobs:
+  - job: MoveToDevTesting
+    displayName: 'Move linked work items to Dev Testing'
+    steps:
+    - checkout: self
+    
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          $prId = "$(System.PullRequest.PullRequestId)"
+          
+          if (-not $prId) {
+              Write-Host "No PR detected, exiting..."
+              exit 0
+          }
+          
+          $repo = "Test"
+          $org = "ejfury"
+          $project = "Test"
+          $pat = "$(System.AccessToken)"
+          
+          $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$pat"))
+          $headers = @{
+              Authorization = "Basic $base64AuthInfo"
+          }
+          
+          $uri = "https://dev.azure.com/$org/$project/_apis/git/repositories/$repo/pullRequests/$prId?api-version=7.1-preview.1"
+          $pr = Invoke-RestMethod -Uri $uri -Headers $headers
+          
+          foreach ($wi in $pr.workItemRefs) {
+              $wiId = ($wi.id -split '/')[-1]
+              Write-Host "Moving Work Item $wiId to Dev Testing"
+              
+              $body = @"
+          [
+            {
+              "op": "add",
+              "path": "/fields/System.State",
+              "value": "Dev Testing"
+            }
+          ]
+          "@
+              
+              $wiUri = "https://dev.azure.com/$org/$project/_apis/wit/workitems/$wiId?api-version=7.1-preview.3"
+              
+              Invoke-RestMethod -Uri $wiUri -Method Patch -Body $body -ContentType "application/json-patch+json" -Headers $headers
+          }
