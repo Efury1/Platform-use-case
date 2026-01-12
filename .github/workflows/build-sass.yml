@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - dev
+    types: [opened, synchronize, reopened]
 
 jobs:
   build-sass:
@@ -22,13 +23,4 @@ jobs:
         run: npm ci
 
       - name: Compile Sass
-        run: |
-          npx sass src/scss:src/dist
-          
-      - name: Add compiled CSS to commit
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add src/dist/*.css
-          git commit -m "Rebuild CSS from Sass [skip ci]" || echo "No changes to commit"
-          git push origin HEAD:${{ github.head_ref }}
+        run: npx sass src/scss:src/dist
