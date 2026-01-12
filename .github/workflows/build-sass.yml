@@ -6,6 +6,13 @@ on:
       - dev
     types: [opened, synchronize, reopened]
 
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why are you running this manually?'
+        required: false
+        default: 'Manual Sass build'
+
 jobs:
   build-sass:
     runs-on: ubuntu-latest
