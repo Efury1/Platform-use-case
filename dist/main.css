@@ -1,20 +1,19 @@
-$primary-color: #3498db;
-
+@charset "UTF-8";
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  color: $primary-color;
+  color: #3498db;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
-  
-  h1 {
-    font-size: 3rem;
-    &:after {
-      content: " 👋 Hello World, Girly xoxox gossiedp goat!";
-    }
-  }
+}
+body h1 {
+  font-size: 3rem;
+}
+body h1:after {
+  content: " 👋 Hello World, Girly!";
 }
 
+/*# sourceMappingURL=main.css.map */
