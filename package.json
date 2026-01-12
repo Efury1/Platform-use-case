@@ -4,7 +4,7 @@
     "prettier": "^3.2.5"
   },
   "scripts": {
-    "sass:watch": "sass --watch src/styles/**/*.scss",
+    "sass:watch": "node sass-watch.js",
     "sass:watch:quiet": "sass --watch src/styles/**/*.scss --quiet-deps",
     "dev": "npm run sass:watch",
     "dev:quiet": "npm run sass:watch:quiet",
