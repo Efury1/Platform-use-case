@@ -30,9 +30,6 @@ Rules:
 - No CSS rules in `abstracts/`
 - Page-specific styles belong **only** in `pages/`
 
-Reference:  
-https://sass-guidelin.es/#the-7-1-pattern
-
 ---
 
 ### Nesting
@@ -65,9 +62,6 @@ Good:
 .nav__link {}
 ```
 
-Reference:
-[https://sass-guidelin.es/#nesting](https://sass-guidelin.es/#nesting)
-
 ---
 
 ### Variables & Design Tokens
@@ -86,9 +80,6 @@ $spacing-md: 1rem;
 $font-size-base: 1rem;
 ```
 
-Reference:
-[https://sass-guidelin.es/#variables](https://sass-guidelin.es/#variables)
-
 ---
 
 ### Mixins & Extend
@@ -103,10 +94,6 @@ Reference:
   justify-content: center;
 }
 ```
-
-Reference:
-[https://sass-guidelin.es/#mixins](https://sass-guidelin.es/#mixins)
-
 ---
 
 ### Property Ordering
@@ -153,8 +140,6 @@ Rules:
 * Functions are verbs
 * Avoid unclear abbreviations
 
-Reference:
-[https://google.github.io/styleguide/jsguide.html#naming](https://google.github.io/styleguide/jsguide.html#naming)
 
 ---
 
@@ -174,9 +159,6 @@ Good:
 const card = document.querySelector('.card');
 card.classList.add('is-active');
 ```
-
-Reference:
-[https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
 
 ---
 
@@ -199,27 +181,6 @@ Rules:
 
 ---
 
-### Styling from JavaScript
-
-JavaScript **toggles classes only**.
-
-```js
-element.classList.add('is-active');
-```
-
-Never:
-
-```js
-element.style.display = 'none';
-```
-
-SCSS owns styling. JavaScript controls state.
-
-Reference:
-[https://css-tricks.com/decoupling-html-css-and-javascript/](https://css-tricks.com/decoupling-html-css-and-javascript/)
-
----
-
 ## Tooling & Enforcement
 
 Standards must be enforced automatically.
@@ -230,12 +191,5 @@ Required tools:
 * **ESLint** – JavaScript linting
 * **Stylelint** – SCSS linting
 
-References:
-
-* [https://prettier.io/](https://prettier.io/)
-* [https://eslint.org/](https://eslint.org/)
-* [https://stylelint.io/](https://stylelint.io/)
-
-Manual formatting and unchecked styles are not acceptable.
 
 ---
