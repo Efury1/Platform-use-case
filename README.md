@@ -8,4 +8,4 @@ The goal of this project is to:
 - Test CI/CD pipeline integration and automation
 - Evaluate AI development tools and their impact on workflow efficiency
 - Assess the integration capabilities with Azure services
-- Establish best practices for combining automated pipelines with AI-assisted development
+- Establish best practices for combining automated pipelines with AI-assisted developments

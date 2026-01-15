@@ -12,9 +12,7 @@ Contains GitHub-specific configurations:
 
 ### `azure-pipelines/` - Azure DevOps CI/CD
 Contains Azure Pipeline definitions for the deployment lifecycle:
-- **build.yml** - Build pipeline configuration
-- **release.yml** - Release pipeline configuration
-- **rollback.yml** - Rollback pipeline configuration
+- **pr-dev-link.yml** - Do a code check
 
 ### `dist/` - Distribution Output
 Build output directory where compiled assets are placed (e.g., compiled CSS from SASS).
