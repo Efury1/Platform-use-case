@@ -5,7 +5,7 @@
 # User guide
 
 - [Installation](guide/installation.md)
-- [Installation](guide/azure.md)
+- [Azure setup](guide/azure.md)
 
 
 # Reference guide
