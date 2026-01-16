@@ -1,10 +1,10 @@
 # GitHub Guide
 
-GitHub is th eplace where we currently collaborate, and store our code.
+GitHub is the place where we currently collaborate, and store our code.
 
 ---
 
-## 1. Repository Management
+## Repository Management
 
 Repositories are where your code lives. GitHub makes it easy to create, organize, and manage projects.
 
@@ -18,7 +18,7 @@ Repositories are where your code lives. GitHub makes it easy to create, organize
 
 ---
 
-## 2. Branching and Workflow Rules
+## Branching and Workflow Rules
 
 Branches let you work on features or fixes without affecting the main code. GitHub supports branch naming conventions, protections, and workflow rules to enforce quality.  
 
@@ -34,7 +34,7 @@ Branches let you work on features or fixes without affecting the main code. GitH
 
 ---
 
-## 3. Pull Requests (PRs) and Code Review
+## Pull Requests (PRs) and Code Review
 
 PRs let you propose changes and get feedback before merging code. They are essential for team collaboration.  
 
@@ -50,12 +50,12 @@ PRs let you propose changes and get feedback before merging code. They are essen
 
 ---
 
-## 4. GitHub Actions (Automation)
+## GitHub Actions (Automation)
 
 GitHub Actions allows you to automate tasks like testing, building, and deploying directly from your repository.  
 
 - **Free users**: Limited minutes for workflow runs per month, enough for small projects.  
-- **Paid plans**: Unlimited workflows, larger compute, and priority runners.  
+- **Paid plans**: Unlimited workflows, expanded compute capacity, and priority runners mean we can trigger PR checks the moment they arrive, and even run them concurrently.
 
 **What you can do**:  
 - Run CI/CD pipelines automatically on code changes  
@@ -69,7 +69,7 @@ GitHub Actions allows you to automate tasks like testing, building, and deployin
 
 ---
 
-## 5. Integration with Azure DevOps
+## Integration with Azure DevOps
 
 GitHub integrates with Azure DevOps, connecting your code repository to work items, boards, and project management tools.  
 
@@ -87,7 +87,7 @@ GitHub integrates with Azure DevOps, connecting your code repository to work ite
 
 ---
 
-## 6. Collaboration Features
+## Collaboration Features
 
 GitHub promotes knowledge sharing through wikis, discussions, and issue tracking.  
 
@@ -105,7 +105,7 @@ GitHub promotes knowledge sharing through wikis, discussions, and issue tracking
 
 ---
 
-## 7. Merge Controls
+## Merge Controls
 
 GitHub gives you fine-grained control over how code is merged to your main branches.  
 
@@ -122,7 +122,7 @@ GitHub gives you fine-grained control over how code is merged to your main branc
 
 ---
 
-## 8. GitHub Copilot
+## GitHub Copilot
 
 GitHub Copilot is an AI-powered assistant that suggests code as you type. It can speed up development and help you learn new patterns.  
 

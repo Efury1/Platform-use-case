@@ -74,14 +74,14 @@ Azure DevOps gives developers visibility and control over repositories:
 
 * **Graphical Repository Views** – Clear visualization of branches, commits, and PRs.  
   ![DevOps Repo](images/Azure/Azure dev ops repo.png)  
-  ![Branch Policy](images/Azure/Azure branch policy.png)
+  ![Branch Policy](images/Azure/Azure_branch_policy.png)
 
 * **Repo Settings & Service Hooks** – Configure policies, integrations, and automation.  
-  ![Repo Settings](images/Azure/Azure repo settings.png)  
-  ![Service Hooks](images/Azure/Azure service hooks.png)
+  ![Repo Settings](images/Azure/Azure_repo_settings.png)  
+  ![Service Hooks](images/Azure/Azure_service_hooks.png)
 
 * **Code Documentation & Readmes** – Markdown support and readme previews.  
-  ![Readme Example](images/Azure/Azure readme#.png)
+  ![Readme Example](images/Azure/Azure_readme.png)
 
 ---
 
