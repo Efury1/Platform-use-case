@@ -14,13 +14,15 @@ Azure DevOps provides transparency and control over code reviews:
 * **Commit History** – Full commit history is available directly in the PR, improving review context.  
   ![Git History Intact](images/Azure/Azure_git_history_in_tack.png)
 
-* **Reviews and Approvals** – All PR review activity and approvals are tracked over time.   
+* **Reviews and Approvals** – All PR review activity and approvals are tracked over time.  
+  ![Pull Request List](images/Azure/Azure pull request list.png)  
   ![Pull Request Completed](images/Azure/Azure_Pull_Request_Completed.png)
 
 * **PR Updates via Notifications** – New commits, status changes, and review activity can be sent via email notifications.  
   ![Notifications](images/Azure/Azure_notifications.png)
 
 * **Cherry-Pick and Squash Options** – PRs support cherry-pick and squash merge strategies.  
+  ![Cherry Pick](images/Azure/Azure Pull Request Cherry Pick.png)  
   ![Squash Commit](images/Azure/Azure_Squash_commit.png)
 
 * **All Required Checks Visible** – PRs show whether all required builds and checks succeeded.  
@@ -35,8 +37,8 @@ Azure Boards integrates planning, work tracking, and traceability:
 * **Work Items Linked to Commits & PRs** – Maintains traceability for code and work items.  
   ![Work Items & PRs](images/Azure/Azure_see_work_items_and_PRs.png)
 
-* **Boards Can Be Mirrored to GitHub** – Migration risk is low, when deciding to switch from Github to Azure DevOps.  
-  ![Azure Boards](images/Azure/Azure_git_history_in_tack.png)
+* **Boards Can Be Mirrored to GitHub** – Migration risk is low if you decide to switch from Azure DevOps.  
+  ![Azure Boards](images/Azure/Azure_boards.png)
 
 * **Retrospectives & Planning** – Tools for team retrospectives and planning.  
   ![Retrospectives](images/Azure/Azure_Retrospecitvies.png)
@@ -51,69 +53,18 @@ Azure Boards integrates planning, work tracking, and traceability:
 CI/CD pipelines in Azure DevOps provide clear insights into build and deployment status:
 
 * **Pipeline Overview** – Build pipelines are easy to navigate and monitor.  
+  ![Pipelines Overview](images/Azure/Azure pipelines.png)  
   ![Select a Repo](images/Azure/Azure_pipelines_select_a_repo.png)
 
-* **Build Status on PRs** – Pull requests  can clearly show if builds pass or fail.  You do have to make a parallelist request to access service.
+* **Build Status on PRs** – Pull requests clearly show if builds pass or fail.  
+  ![No Hosted Parallelism](images/Azure/Azure No hosted parallelism.png)  
   ![Parallel Requests](images/Azure/Azure_DevOps_Parallelist_Request.png)
 
-* **Code Quality Checks** – Can have integrated code quality and static analysis.  
+* **Code Quality Checks** – Integrated code quality and static analysis.  
   ![Code Quality](images/Azure/Azure_code_quality.png)
 
-* **Cycle Time** – We can see how long it takes to complete work from start to finish. We can use this regardless of the service we go with, it 
+* **Historical Build Results** – Builds and artifacts remain accessible for auditing or troubleshooting.  
   ![Cycle Time](images/Azure/Cyce_time_on azure.png)
-
-
-## Running CI for Multiple PRs (Simple Explanation)
-
-When two Pull Requests are opened or updated at the same time, each PR triggers the CI pipeline.
-
-- If only **one parallel job** is available, Azure DevOps will:
-  - Run one PR pipeline
-  - Queue the other until the first finishes
-
-- If **two parallel jobs** are available, Azure DevOps will:
-  - Run both PR pipelines at the same time it means it does not matter whether the PRs use:
-- The same pipeline or different pipelines
-- The same repository or different repositories
-- The same or different branches
-
-What matters is how many pipelines are running **at the same time**.
-
----
-
-## Parallel Jobs and Cost
-
-- Azure DevOps includes **1 free self-hosted parallel job**
-- This allows **one pipeline to run at a time**
-- To run **two PR pipelines simultaneously**, you need:
-  - **1 additional self-hosted parallel job**
-
-**Cost:** $15 per month  
-**Minutes:** Unlimited
-
- ![Azure Pricing](images/Azure/Azure_individual_vs_user_license.png)
-
----
-
-## What Needs to Be Set Up
-
-To run two pipelines at the same time:
-- You must have **two self-hosted agents running**
-- Buying a parallel job only allows concurrency; it does not create agents
-
-In short:
-- **Parallel job = permission to run**
-- **Agent = machine that does the work**
-
-We need both.
-
----
-
-## Practical Recommendation
-
-If CI jobs are short (a few minutes), queueing is usually fine.  
-If CI jobs are long or frequently overlap, adding one parallel job improves developer experience for a small cost.
-
 
 ---
 
