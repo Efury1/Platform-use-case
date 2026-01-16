@@ -1,6 +1,6 @@
 # GitHub Guide
 
-GitHub is the place where we currently collaborate, and store our code.
+GitHub is the place where we currently collaborate, and store our code. Below we explore the Github platform.
 
 ---
 
