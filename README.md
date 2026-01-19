@@ -1,6 +1,3 @@
-Got you! Here's a clean, updated **README.md** that simply includes your link and explains what it shows — no need for deep comparisons unless you want them later.
-
-***
 
 # **Test-Environment**
 
